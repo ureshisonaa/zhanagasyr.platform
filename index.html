@@ -1,0 +1,31 @@
+import { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { Dashboard } from './pages/Dashboard/Dashboard';
+import { Login } from './pages/Login/Login';
+import { useAuthStore } from './store/authStore';
+
+function App(): JSX.Element {
+  const initialize = useAuthStore((state) => state.initialize);
+
+  useEffect(() => {
+    void initialize();
+  }, [initialize]);
+
+  return (
+    <BrowserRouter>
+      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Dashboard />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
